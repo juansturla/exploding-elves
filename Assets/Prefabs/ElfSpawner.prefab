@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 4599844703698673866}
   - component: {fileID: 4410700776018276508}
   - component: {fileID: 7570101187788923969}
+  - component: {fileID: -1291449003520433994}
   m_Layer: 0
   m_Name: ElfSpawner
   m_TagString: Untagged
@@ -97,3 +98,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ElfColor: {r: 0, g: 0, b: 0, a: 0}
+--- !u!114 &-1291449003520433994
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3935876832961649114}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: add199bfb31eb4a89bbae5e08443386a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Prefab: {fileID: 6728666624307767460, guid: 46aab29585254417f9de9bba749c5773, type: 3}
+  SpawnRate: 10

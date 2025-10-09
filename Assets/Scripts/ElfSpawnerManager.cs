@@ -12,11 +12,12 @@ public class ElfSpawnerManager : MonoBehaviour
     [Tooltip("GameObject to be Spawned by the Spawners")]
     public GameObject elfPrefab; 
 
-    private ElfSpawner[] elfSpawners;
+    private ElfSpawner[] elfSpawners = {};
     private float lastTimeBetweenSpawns;
     // Start is called before the first frame update
     void Start()
     {
+        Debug.Log("Start");
         lastTimeBetweenSpawns = TimeBetweenSpawns;
 
         elfSpawners = FindObjectsOfType<ElfSpawner>();
