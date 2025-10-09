@@ -13,7 +13,10 @@ public struct Spawner : IComponentData
 
 public class SpawnerAuthoring : MonoBehaviour
 {
+    [Tooltip("Elf prefab to be spawned")]
     public GameObject Prefab;
+    [Tooltip("Time between spawns (in seconds)")]
+    [Range(1,10)]
     public float SpawnRate = 1f;
     public class SpawnerBaker : Baker<SpawnerAuthoring>
     {
@@ -44,9 +47,10 @@ public partial struct SpawnerSystem : ISystem
 
             if (spawner.ValueRO.Timer <= 0f)
             {
-                ecb.Instantiate(spawner.ValueRO.Prefab);
-                ecb.SetComponent(spawner.ValueRO.Prefab, LocalTransform.FromPosition(SystemAPI.GetComponent<LocalTransform>(entity).Position)); // Example: spawn at spawner's position
+                ecb.SetComponent(spawner.ValueRO.Prefab, LocalTransform.FromPosition(SystemAPI.GetComponent<LocalTransform>(entity).Position));
                 spawner.ValueRW.Timer = spawner.ValueRO.SpawnRate;
+                ecb.Instantiate(spawner.ValueRO.Prefab);
+
             }
         }
         ecb.Playback(state.EntityManager);

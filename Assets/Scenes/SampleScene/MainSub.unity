@@ -130,6 +130,17 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: -1291449003520433994, guid: a81e15133bf18462e8853b459839e6af,
+        type: 3}
+      propertyPath: Prefab
+      value: 
+      objectReference: {fileID: 7490846331192389023, guid: c9e4f4d46e9c84124b0ef4f87126842f,
+        type: 3}
+    - target: {fileID: -1291449003520433994, guid: a81e15133bf18462e8853b459839e6af,
+        type: 3}
+      propertyPath: SpawnRate
+      value: 4.42
+      objectReference: {fileID: 0}
     - target: {fileID: 6083526732361075, guid: a81e15133bf18462e8853b459839e6af, type: 3}
       propertyPath: m_LocalPosition.x
       value: 8.65
@@ -180,27 +191,8 @@ PrefabInstance:
       propertyPath: m_Materials.Array.data[0]
       value: 
       objectReference: {fileID: 2100000, guid: 7b63e9448f073474399bd5c237818cc3, type: 2}
-    - target: {fileID: 7570101187788923969, guid: a81e15133bf18462e8853b459839e6af,
-        type: 3}
-      propertyPath: ElfColor.a
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 7570101187788923969, guid: a81e15133bf18462e8853b459839e6af,
-        type: 3}
-      propertyPath: ElfColor.b
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7570101187788923969, guid: a81e15133bf18462e8853b459839e6af,
-        type: 3}
-      propertyPath: ElfColor.g
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7570101187788923969, guid: a81e15133bf18462e8853b459839e6af,
-        type: 3}
-      propertyPath: ElfColor.r
-      value: 1
-      objectReference: {fileID: 0}
     m_RemovedComponents:
+    - {fileID: 0}
     - {fileID: 0}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -320,7 +312,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 433532243}
-  - component: {fileID: 433532244}
   m_Layer: 0
   m_Name: ElfSpawnerManager
   m_TagString: Untagged
@@ -343,21 +334,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &433532244
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 433532242}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0ecf536b7d54f484d8e87728d84f28b0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  TimeBetweenSpawns: 2.51
-  elfPrefab: {fileID: 6728666624307767460, guid: 46aab29585254417f9de9bba749c5773,
-    type: 3}
 --- !u!1001 &535130691
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -366,6 +342,17 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: -1291449003520433994, guid: a81e15133bf18462e8853b459839e6af,
+        type: 3}
+      propertyPath: Prefab
+      value: 
+      objectReference: {fileID: 5169135886684187768, guid: f3b4d98f3606a444eacc5bffdc3f255a,
+        type: 3}
+    - target: {fileID: -1291449003520433994, guid: a81e15133bf18462e8853b459839e6af,
+        type: 3}
+      propertyPath: SpawnRate
+      value: 4.42
+      objectReference: {fileID: 0}
     - target: {fileID: 6083526732361075, guid: a81e15133bf18462e8853b459839e6af, type: 3}
       propertyPath: m_LocalPosition.x
       value: -7.960001
@@ -416,21 +403,6 @@ PrefabInstance:
       propertyPath: m_Materials.Array.data[0]
       value: 
       objectReference: {fileID: 2100000, guid: e3331306080174492abb7858c38f9da3, type: 2}
-    - target: {fileID: 7570101187788923969, guid: a81e15133bf18462e8853b459839e6af,
-        type: 3}
-      propertyPath: ElfColor.b
-      value: 0.089500666
-      objectReference: {fileID: 0}
-    - target: {fileID: 7570101187788923969, guid: a81e15133bf18462e8853b459839e6af,
-        type: 3}
-      propertyPath: ElfColor.g
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 7570101187788923969, guid: a81e15133bf18462e8853b459839e6af,
-        type: 3}
-      propertyPath: ElfColor.r
-      value: 0
-      objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 0}
     m_RemovedGameObjects: []
@@ -748,6 +720,17 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: -1291449003520433994, guid: a81e15133bf18462e8853b459839e6af,
+        type: 3}
+      propertyPath: Prefab
+      value: 
+      objectReference: {fileID: 8207859227488891062, guid: 4fc48a951a2a84e84bc5e063baaa7f0e,
+        type: 3}
+    - target: {fileID: -1291449003520433994, guid: a81e15133bf18462e8853b459839e6af,
+        type: 3}
+      propertyPath: SpawnRate
+      value: 4.42
+      objectReference: {fileID: 0}
     - target: {fileID: 6083526732361075, guid: a81e15133bf18462e8853b459839e6af, type: 3}
       propertyPath: m_LocalPosition.x
       value: -7.96
@@ -798,11 +781,6 @@ PrefabInstance:
       propertyPath: m_Materials.Array.data[0]
       value: 
       objectReference: {fileID: 2100000, guid: 9ca857dbf63b5455288ef0006eaa88f8, type: 2}
-    - target: {fileID: 7570101187788923969, guid: a81e15133bf18462e8853b459839e6af,
-        type: 3}
-      propertyPath: ElfColor.b
-      value: 1
-      objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 0}
     m_RemovedGameObjects: []
@@ -1019,6 +997,79 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2069612257}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!1001 &473879222493255061
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 3321108611635152543, guid: 4fc48a951a2a84e84bc5e063baaa7f0e,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3321108611635152543, guid: 4fc48a951a2a84e84bc5e063baaa7f0e,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 1.42
+      objectReference: {fileID: 0}
+    - target: {fileID: 3321108611635152543, guid: 4fc48a951a2a84e84bc5e063baaa7f0e,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3321108611635152543, guid: 4fc48a951a2a84e84bc5e063baaa7f0e,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3321108611635152543, guid: 4fc48a951a2a84e84bc5e063baaa7f0e,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3321108611635152543, guid: 4fc48a951a2a84e84bc5e063baaa7f0e,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3321108611635152543, guid: 4fc48a951a2a84e84bc5e063baaa7f0e,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3321108611635152543, guid: 4fc48a951a2a84e84bc5e063baaa7f0e,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3321108611635152543, guid: 4fc48a951a2a84e84bc5e063baaa7f0e,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3321108611635152543, guid: 4fc48a951a2a84e84bc5e063baaa7f0e,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8207859227488891062, guid: 4fc48a951a2a84e84bc5e063baaa7f0e,
+        type: 3}
+      propertyPath: m_Name
+      value: RandomElf
+      objectReference: {fileID: 0}
+    - target: {fileID: 8207859227488891062, guid: 4fc48a951a2a84e84bc5e063baaa7f0e,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 4fc48a951a2a84e84bc5e063baaa7f0e, type: 3}
 --- !u!1001 &2276677257415731206
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1027,6 +1078,17 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: -1291449003520433994, guid: a81e15133bf18462e8853b459839e6af,
+        type: 3}
+      propertyPath: Prefab
+      value: 
+      objectReference: {fileID: 2476431425342377002, guid: 14f52680dc4da4f0fb95ab9e14691d83,
+        type: 3}
+    - target: {fileID: -1291449003520433994, guid: a81e15133bf18462e8853b459839e6af,
+        type: 3}
+      propertyPath: SpawnRate
+      value: 4.42
+      objectReference: {fileID: 0}
     - target: {fileID: 6083526732361075, guid: a81e15133bf18462e8853b459839e6af, type: 3}
       propertyPath: m_LocalPosition.x
       value: 8.65
@@ -1072,21 +1134,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: WhiteElfSpawner
       objectReference: {fileID: 0}
-    - target: {fileID: 7570101187788923969, guid: a81e15133bf18462e8853b459839e6af,
-        type: 3}
-      propertyPath: ElfColor.b
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 7570101187788923969, guid: a81e15133bf18462e8853b459839e6af,
-        type: 3}
-      propertyPath: ElfColor.g
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 7570101187788923969, guid: a81e15133bf18462e8853b459839e6af,
-        type: 3}
-      propertyPath: ElfColor.r
-      value: 1
-      objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 0}
     - {fileID: 0}
@@ -1094,74 +1141,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a81e15133bf18462e8853b459839e6af, type: 3}
---- !u!1001 &5420938062408593831
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    serializedVersion: 3
-    m_TransformParent: {fileID: 0}
-    m_Modifications:
-    - target: {fileID: 189107686330474125, guid: 46aab29585254417f9de9bba749c5773,
-        type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 189107686330474125, guid: 46aab29585254417f9de9bba749c5773,
-        type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 1.42
-      objectReference: {fileID: 0}
-    - target: {fileID: 189107686330474125, guid: 46aab29585254417f9de9bba749c5773,
-        type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 189107686330474125, guid: 46aab29585254417f9de9bba749c5773,
-        type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 189107686330474125, guid: 46aab29585254417f9de9bba749c5773,
-        type: 3}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 189107686330474125, guid: 46aab29585254417f9de9bba749c5773,
-        type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 189107686330474125, guid: 46aab29585254417f9de9bba749c5773,
-        type: 3}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 189107686330474125, guid: 46aab29585254417f9de9bba749c5773,
-        type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 189107686330474125, guid: 46aab29585254417f9de9bba749c5773,
-        type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 189107686330474125, guid: 46aab29585254417f9de9bba749c5773,
-        type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6728666624307767460, guid: 46aab29585254417f9de9bba749c5773,
-        type: 3}
-      propertyPath: m_Name
-      value: RandomElf
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-    m_RemovedGameObjects: []
-    m_AddedGameObjects: []
-    m_AddedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: 46aab29585254417f9de9bba749c5773, type: 3}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
@@ -1172,5 +1151,5 @@ SceneRoots:
   - {fileID: 41027558}
   - {fileID: 1468934348}
   - {fileID: 433532243}
-  - {fileID: 5420938062408593831}
+  - {fileID: 473879222493255061}
   - {fileID: 836127881}
