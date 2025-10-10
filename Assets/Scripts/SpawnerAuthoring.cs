@@ -47,9 +47,12 @@ public partial struct SpawnerSystem : ISystem
 
             if (spawner.ValueRO.Timer <= 0f)
             {
-                ecb.SetComponent(spawner.ValueRO.Prefab, LocalTransform.FromPosition(SystemAPI.GetComponent<LocalTransform>(entity).Position));
+                var targetPosition =
+                    LocalTransform.FromPosition(SystemAPI.GetComponent<LocalTransform>(entity).Position);
+                ecb.SetComponent(spawner.ValueRO.Prefab, targetPosition);
                 spawner.ValueRW.Timer = spawner.ValueRO.SpawnRate;
-                ecb.Instantiate(spawner.ValueRO.Prefab);
+                var newEntity = ecb.Instantiate(spawner.ValueRO.Prefab);
+                state.Enabled = false;
 
             }
         }

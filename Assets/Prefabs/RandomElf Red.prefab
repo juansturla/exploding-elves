@@ -58,6 +58,16 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2042612508297268168, guid: 46aab29585254417f9de9bba749c5773,
+        type: 3}
+      propertyPath: m_UseGravity
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2042612508297268168, guid: 46aab29585254417f9de9bba749c5773,
+        type: 3}
+      propertyPath: m_IsKinematic
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5563851065018832973, guid: 46aab29585254417f9de9bba749c5773,
         type: 3}
       propertyPath: m_Materials.Array.data[0]
@@ -66,7 +76,12 @@ PrefabInstance:
     - target: {fileID: 6728666624307767460, guid: 46aab29585254417f9de9bba749c5773,
         type: 3}
       propertyPath: m_Name
-      value: RandomElf Variant
+      value: RandomElf Red
+      objectReference: {fileID: 0}
+    - target: {fileID: 8044856705167412485, guid: 46aab29585254417f9de9bba749c5773,
+        type: 3}
+      propertyPath: Range.y
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

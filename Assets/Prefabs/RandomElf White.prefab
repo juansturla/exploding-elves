@@ -61,7 +61,7 @@ PrefabInstance:
     - target: {fileID: 5169135886684187768, guid: f3b4d98f3606a444eacc5bffdc3f255a,
         type: 3}
       propertyPath: m_Name
-      value: RandomElf Variant
+      value: RandomElf White
       objectReference: {fileID: 0}
     - target: {fileID: 6335357438145633425, guid: f3b4d98f3606a444eacc5bffdc3f255a,
         type: 3}
