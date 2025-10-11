@@ -18,6 +18,7 @@ public class SpawnerAuthoring : MonoBehaviour
     [Tooltip("Time between spawns (in seconds)")]
     [Range(1,10)]
     public float SpawnRate = 1f;
+
     public class SpawnerBaker : Baker<SpawnerAuthoring>
     {
         public override void Bake(SpawnerAuthoring authoring)
@@ -52,8 +53,6 @@ public partial struct SpawnerSystem : ISystem
                 ecb.SetComponent(spawner.ValueRO.Prefab, targetPosition);
                 spawner.ValueRW.Timer = spawner.ValueRO.SpawnRate;
                 var newEntity = ecb.Instantiate(spawner.ValueRO.Prefab);
-                state.Enabled = false;
-
             }
         }
         ecb.Playback(state.EntityManager);

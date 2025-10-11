@@ -139,7 +139,7 @@ PrefabInstance:
     - target: {fileID: -1291449003520433994, guid: a81e15133bf18462e8853b459839e6af,
         type: 3}
       propertyPath: SpawnRate
-      value: 4.42
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6083526732361075, guid: a81e15133bf18462e8853b459839e6af, type: 3}
       propertyPath: m_LocalPosition.x
@@ -351,7 +351,7 @@ PrefabInstance:
     - target: {fileID: -1291449003520433994, guid: a81e15133bf18462e8853b459839e6af,
         type: 3}
       propertyPath: SpawnRate
-      value: 4.42
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6083526732361075, guid: a81e15133bf18462e8853b459839e6af, type: 3}
       propertyPath: m_LocalPosition.x
@@ -729,7 +729,7 @@ PrefabInstance:
     - target: {fileID: -1291449003520433994, guid: a81e15133bf18462e8853b459839e6af,
         type: 3}
       propertyPath: SpawnRate
-      value: 4.42
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6083526732361075, guid: a81e15133bf18462e8853b459839e6af, type: 3}
       propertyPath: m_LocalPosition.x
@@ -1087,7 +1087,7 @@ PrefabInstance:
     - target: {fileID: -1291449003520433994, guid: a81e15133bf18462e8853b459839e6af,
         type: 3}
       propertyPath: SpawnRate
-      value: 4.42
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6083526732361075, guid: a81e15133bf18462e8853b459839e6af, type: 3}
       propertyPath: m_LocalPosition.x

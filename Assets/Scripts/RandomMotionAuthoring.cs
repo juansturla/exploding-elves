@@ -19,9 +19,6 @@ public struct RandomMotion : IComponentData
     public FixedString64Bytes Name;
 }
 
-// This behavior will set a dynamic body's linear velocity to get to randomly selected
-// point in space. When the body gets with a specified tolerance of the random position,
-// a new random position is chosen and the body starts header there instead.
 public class RandomMotionAuthoring : MonoBehaviour
 {
     public float3 Range = new float3(1);
@@ -65,11 +62,7 @@ public partial struct RandomMotionSystem : ISystem
 
             var desiredOffset = motion.DesiredPosition - transform.Position;
             // If we are close enough to the destination pick a new destination
-            if (motion.CurrentTime != DeltaTime)
-            {
-                Debug.Log("Remaining distance for " + motion.Name + " distance: "
-                          + math.lengthsq(transform.Position - motion.DesiredPosition));
-            }
+            
             if (motion.CurrentTime == DeltaTime ||
                 math.lengthsq(transform.Position - motion.DesiredPosition) < motion.Tolerance)
             {
@@ -77,8 +70,6 @@ public partial struct RandomMotionSystem : ISystem
                 var max = new float3(math.abs(motion.Range));
                 desiredOffset = Random.NextFloat3(min, max);
                 motion.DesiredPosition = desiredOffset + transform.Position;
-                Debug.Log("Point reached, changing direction. Current position " + transform.Position 
-                    + " Offset: " + desiredOffset);
                 velocity.Linear = math.normalize((motion.DesiredPosition - transform.Position)) * 1;
             }
             // Smoothly change the linear velocity

@@ -18,6 +18,11 @@ PrefabInstance:
       propertyPath: m_Materials.Array.data[0]
       value: 
       objectReference: {fileID: 2100000, guid: 9ca857dbf63b5455288ef0006eaa88f8, type: 2}
+    - target: {fileID: 4220186784916381148, guid: 14f52680dc4da4f0fb95ab9e14691d83,
+        type: 3}
+      propertyPath: ElfColor
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 9052467900799498755, guid: 14f52680dc4da4f0fb95ab9e14691d83,
         type: 3}
       propertyPath: m_LocalPosition.x
