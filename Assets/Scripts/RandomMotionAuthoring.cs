@@ -47,20 +47,18 @@ class RandomMotionAuthoringBaker : Baker<RandomMotionAuthoring>
 [UpdateBefore(typeof(PhysicsSystemGroup))]
 public partial struct RandomMotionSystem : ISystem
 {
+    public Random Random;
+
     [BurstCompile]
     public partial struct EntityRandomMotionJob : IJobEntity
     {
         public Random Random;
-        public PhysicsStep StepComponent;
         public float DeltaTime;
 
         public void Execute(ref RandomMotion motion, ref PhysicsVelocity velocity, in LocalTransform transform, in PhysicsMass mass)
         {
             motion.CurrentTime += DeltaTime;
 
-            Random.InitState((uint)(motion.CurrentTime * 1000));
-
-            var desiredOffset = motion.DesiredPosition - transform.Position;
             // If we are close enough to the destination pick a new destination
             
             if (motion.CurrentTime == DeltaTime ||
@@ -68,14 +66,9 @@ public partial struct RandomMotionSystem : ISystem
             {
                 var min = new float3(-math.abs(motion.Range));
                 var max = new float3(math.abs(motion.Range));
-                desiredOffset = Random.NextFloat3(min, max);
+                var desiredOffset = Random.NextFloat3(min, max);
                 motion.DesiredPosition = desiredOffset + transform.Position;
-                velocity.Linear = math.normalize((motion.DesiredPosition - transform.Position)) * 1;
-            }
-            // Smoothly change the linear velocity
-            if (mass.InverseMass != 0)
-            {
-                velocity.Linear -= StepComponent.Gravity * DeltaTime;
+                velocity.Linear = math.normalize((motion.DesiredPosition - transform.Position)) * 5;
             }
         }
     }
@@ -84,19 +77,17 @@ public partial struct RandomMotionSystem : ISystem
     public void OnCreate(ref SystemState state)
     {
         state.RequireForUpdate<RandomMotion>();
+        Random = new Random();
+        Random.InitState();
     }
 
     [BurstCompile]
     public void OnUpdate(ref SystemState state)
     {
-        if (!SystemAPI.TryGetSingleton<PhysicsStep>(out var stepComponent))
-            stepComponent = PhysicsStep.Default;
-
         state.Dependency = new EntityRandomMotionJob
         {
-            Random = new Random(),
+            Random = Random,
             DeltaTime = SystemAPI.Time.DeltaTime,
-            StepComponent = stepComponent
         }.Schedule(state.Dependency);
     }
 }

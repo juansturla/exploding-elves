@@ -53,6 +53,12 @@ public partial struct SpawnerSystem : ISystem
                 ecb.SetComponent(spawner.ValueRO.Prefab, targetPosition);
                 spawner.ValueRW.Timer = spawner.ValueRO.SpawnRate;
                 var newEntity = ecb.Instantiate(spawner.ValueRO.Prefab);
+                LifetimeComponent newLifetimeComponent = new LifetimeComponent()
+                {
+                    Timestamp = SystemAPI.Time.ElapsedTime
+                };
+
+                ecb.AddComponent(newEntity, newLifetimeComponent);
             }
         }
         ecb.Playback(state.EntityManager);
