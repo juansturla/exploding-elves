@@ -11,17 +11,20 @@ using Random = Unity.Mathematics.Random;
 public struct RandomMotion : IComponentData
 {
     public float CurrentTime;
-    public float3 InitialPosition;
-    public float3 DesiredPosition;
+    public float3 DesiredRotation;
     public float Speed;
-    public float Tolerance;
-    public float3 Range;
-    public FixedString64Bytes Name;
+    public float TimeUntilNextRotation;
+    public float TimeBetweenRotations;
+    public float MaxRotationAngle; 
 }
 
 public class RandomMotionAuthoring : MonoBehaviour
 {
     public float3 Range = new float3(1);
+
+    public float TimeBetweenRotations = 1f;
+    public float MaxRotationAngle = 45f;
+    public float Speed = 2f;
 }
 
 class RandomMotionAuthoringBaker : Baker<RandomMotionAuthoring>
@@ -29,16 +32,14 @@ class RandomMotionAuthoringBaker : Baker<RandomMotionAuthoring>
     public override void Bake(RandomMotionAuthoring authoring)
     {
         var length = math.length(authoring.Range);
-        var transform = GetComponent<Transform>();
         var entity = GetEntity(TransformUsageFlags.Dynamic);
         AddComponent(entity, new RandomMotion
         {
-            InitialPosition = transform.position,
-            DesiredPosition = float3.zero,
-            Speed = length * 0.01f,
-            Tolerance = 0.5f,
-            Range = authoring.Range,
-            Name = this.GetName()
+            DesiredRotation = float3.zero,
+            Speed = authoring.Speed,
+            TimeUntilNextRotation = 0,
+            TimeBetweenRotations = authoring.TimeBetweenRotations,
+            MaxRotationAngle = authoring.MaxRotationAngle,
         });
     }
 }
@@ -47,28 +48,33 @@ class RandomMotionAuthoringBaker : Baker<RandomMotionAuthoring>
 [UpdateBefore(typeof(PhysicsSystemGroup))]
 public partial struct RandomMotionSystem : ISystem
 {
-    public Random Random;
+    private Random random;
 
     [BurstCompile]
     public partial struct EntityRandomMotionJob : IJobEntity
     {
         public Random Random;
         public float DeltaTime;
+        private const float ROTATION_TOLERANCE = 2f;
 
-        public void Execute(ref RandomMotion motion, ref PhysicsVelocity velocity, in LocalTransform transform, in PhysicsMass mass)
+        public void Execute(ref RandomMotion motion, ref PhysicsVelocity velocity, ref LocalTransform transform, in PhysicsMass mass)
         {
             motion.CurrentTime += DeltaTime;
 
-            // If we are close enough to the destination pick a new destination
-            
-            if (motion.CurrentTime == DeltaTime ||
-                math.lengthsq(transform.Position - motion.DesiredPosition) < motion.Tolerance)
+            motion.TimeUntilNextRotation -= DeltaTime;
+            if (motion.TimeUntilNextRotation < 0)
             {
-                var min = new float3(-math.abs(motion.Range));
-                var max = new float3(math.abs(motion.Range));
-                var desiredOffset = Random.NextFloat3(min, max);
-                motion.DesiredPosition = desiredOffset + transform.Position;
-                velocity.Linear = math.normalize((motion.DesiredPosition - transform.Position)) * 5;
+                var deltaYDegrees = Random.NextFloat(-motion.MaxRotationAngle, motion.MaxRotationAngle);
+                motion.TimeUntilNextRotation = motion.TimeBetweenRotations;
+                motion.DesiredRotation = transform.RotateY(math.radians(deltaYDegrees)).Forward();
+            }
+            velocity.Linear = transform.Forward() * motion.Speed;
+
+            var angle = Vector3.Angle(transform.Forward(), motion.DesiredRotation);
+            if (angle > ROTATION_TOLERANCE)
+            {
+                var targetRotation = Quaternion.LookRotation(motion.DesiredRotation, transform.Up());
+                transform.Rotation = math.slerp(transform.Rotation, targetRotation, DeltaTime * 5);
             }
         }
     }
@@ -77,8 +83,8 @@ public partial struct RandomMotionSystem : ISystem
     public void OnCreate(ref SystemState state)
     {
         state.RequireForUpdate<RandomMotion>();
-        Random = new Random();
-        Random.InitState();
+        random = new Random();
+        random.InitState();
     }
 
     [BurstCompile]
@@ -86,7 +92,7 @@ public partial struct RandomMotionSystem : ISystem
     {
         state.Dependency = new EntityRandomMotionJob
         {
-            Random = Random,
+            Random = random,
             DeltaTime = SystemAPI.Time.DeltaTime,
         }.Schedule(state.Dependency);
     }

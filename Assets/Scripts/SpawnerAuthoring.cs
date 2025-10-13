@@ -59,9 +59,11 @@ public partial struct SpawnerSystem : ISystem
                 };
 
                 ecb.AddComponent(newEntity, newLifetimeComponent);
+                //state.Enabled = false;
             }
         }
         ecb.Playback(state.EntityManager);
+        
     }
 
     public void OnCreate(ref SystemState state) { }

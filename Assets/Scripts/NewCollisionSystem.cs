@@ -11,7 +11,9 @@ using UnityEngine;
 public partial struct NewCollisionSystem : ISystem
 {
     private const int MAX_ENTITIES = 100;
-    public static int entitiesCount = 0;
+    private static readonly SharedStatic<int> EntitiesCount = SharedStatic<int>.GetOrCreate<NewCollisionSystem>();
+    
+    
     public void OnCreate(ref SystemState state)
     {
         state.RequireForUpdate<SimulationSingleton>();
@@ -74,18 +76,22 @@ public partial struct NewCollisionSystem : ISystem
             if (elfAComponent.ElfColor == elfBComponent.ElfColor)
             {
                 
-                if (entitiesCount < MAX_ENTITIES)
+                if (EntitiesCount.Data < MAX_ENTITIES)
                 {
                     // Update the timestamps to avoid collisioning after colliding
                     lifetimeAComponent.Timestamp = currentTimestamp;
                     lifetimeBComponent.Timestamp = currentTimestamp;
-                    entitiesCount++;
+                    ECB.SetComponent(elfAEntity, lifetimeAComponent);
+                    ECB.SetComponent(elfBEntity, lifetimeBComponent);
+                    // TODO: Find another way of referencing this entityCount without the static field
+                    EntitiesCount.Data++;
                     ECB.Instantiate(elfAEntity);
                 }
             } 
             else
             {
-                entitiesCount -= 2;
+                // TODO: Find another way of referencing this entityCount without the static field
+                EntitiesCount.Data -= 2;
                 ECB.DestroyEntity(elfAEntity);
                 ECB.DestroyEntity(elfBEntity);
             }
