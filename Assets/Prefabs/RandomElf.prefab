@@ -15,6 +15,7 @@ GameObject:
   - component: {fileID: 8044856705167412485}
   - component: {fileID: 2042612508297268168}
   - component: {fileID: 5020975248275454290}
+  - component: {fileID: 2678754661016802342}
   m_Layer: 0
   m_Name: RandomElf
   m_TagString: Untagged
@@ -52,7 +53,7 @@ MeshRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6728666624307767460}
-  m_Enabled: 1
+  m_Enabled: 0
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
@@ -164,3 +165,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ElfColor: 0
+--- !u!114 &2678754661016802342
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6728666624307767460}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e0ca98dcf2614d71ab11d3fce3567720, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ElfGameObjectPrefab: {fileID: 1689455102317406, guid: a7f0c6babf0184d4a875fab3acabfa10,
+    type: 3}

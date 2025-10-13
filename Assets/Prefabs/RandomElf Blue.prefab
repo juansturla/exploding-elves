@@ -8,6 +8,11 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 555329355969146066, guid: 14f52680dc4da4f0fb95ab9e14691d83,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 165bf7a564e1942359d6afeec60a1ea1, type: 2}
     - target: {fileID: 2476431425342377002, guid: 14f52680dc4da4f0fb95ab9e14691d83,
         type: 3}
       propertyPath: m_Name
@@ -23,6 +28,12 @@ PrefabInstance:
       propertyPath: ElfColor
       value: 2
       objectReference: {fileID: 0}
+    - target: {fileID: 6490763262686507176, guid: 14f52680dc4da4f0fb95ab9e14691d83,
+        type: 3}
+      propertyPath: ElfGameObjectPrefab
+      value: 
+      objectReference: {fileID: 5598911184400211391, guid: de6be7fe309d24f8f9d277f26fe0245a,
+        type: 3}
     - target: {fileID: 7162934141558042438, guid: 14f52680dc4da4f0fb95ab9e14691d83,
         type: 3}
       propertyPath: m_UseGravity

@@ -68,6 +68,12 @@ PrefabInstance:
       propertyPath: m_IsKinematic
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2678754661016802342, guid: 46aab29585254417f9de9bba749c5773,
+        type: 3}
+      propertyPath: ElfGameObjectPrefab
+      value: 
+      objectReference: {fileID: 4999593142999819868, guid: e24c82143242d4719a7cbfaeaa56ecea,
+        type: 3}
     - target: {fileID: 5563851065018832973, guid: 46aab29585254417f9de9bba749c5773,
         type: 3}
       propertyPath: m_Materials.Array.data[0]

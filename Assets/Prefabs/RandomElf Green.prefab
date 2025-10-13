@@ -8,6 +8,12 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 2285869840242741533, guid: c9e4f4d46e9c84124b0ef4f87126842f,
+        type: 3}
+      propertyPath: ElfGameObjectPrefab
+      value: 
+      objectReference: {fileID: 4999593142999819868, guid: a4d5fe61c537244b6a968e9900a4b2dd,
+        type: 3}
     - target: {fileID: 2795894142728834803, guid: c9e4f4d46e9c84124b0ef4f87126842f,
         type: 3}
       propertyPath: m_UseGravity
@@ -68,6 +74,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4764304095328865639, guid: c9e4f4d46e9c84124b0ef4f87126842f,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 7e0fa1b8d02854c43ad781fd79269620, type: 2}
     - target: {fileID: 7490846331192389023, guid: c9e4f4d46e9c84124b0ef4f87126842f,
         type: 3}
       propertyPath: m_Name

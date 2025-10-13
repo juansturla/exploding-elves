@@ -58,6 +58,12 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4607651074260127994, guid: f3b4d98f3606a444eacc5bffdc3f255a,
+        type: 3}
+      propertyPath: ElfGameObjectPrefab
+      value: 
+      objectReference: {fileID: 4999593142999819868, guid: a7f0c6babf0184d4a875fab3acabfa10,
+        type: 3}
     - target: {fileID: 5169135886684187768, guid: f3b4d98f3606a444eacc5bffdc3f255a,
         type: 3}
       propertyPath: m_Name
@@ -72,6 +78,21 @@ PrefabInstance:
         type: 3}
       propertyPath: ElfColor
       value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 7086015897987337344, guid: f3b4d98f3606a444eacc5bffdc3f255a,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: eda4ef716fc2141ba8de8bf6709d09f3, type: 2}
+    - target: {fileID: 7129173271628270976, guid: f3b4d98f3606a444eacc5bffdc3f255a,
+        type: 3}
+      propertyPath: m_CullingMode
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7129173271628270976, guid: f3b4d98f3606a444eacc5bffdc3f255a,
+        type: 3}
+      propertyPath: m_ApplyRootMotion
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
