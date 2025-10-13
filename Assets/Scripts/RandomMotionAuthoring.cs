@@ -1,5 +1,4 @@
 using Unity.Burst;
-using Unity.Collections;
 using Unity.Entities;
 using Unity.Mathematics;
 using Unity.Physics;
@@ -20,10 +19,8 @@ public struct RandomMotion : IComponentData
 
 public class RandomMotionAuthoring : MonoBehaviour
 {
-    public float3 Range = new float3(1);
-
     public float TimeBetweenRotations = 1f;
-    public float MaxRotationAngle = 45f;
+    public float MaxRotationAngle = 60f;
     public float Speed = 2f;
 }
 
@@ -31,7 +28,6 @@ class RandomMotionAuthoringBaker : Baker<RandomMotionAuthoring>
 {
     public override void Bake(RandomMotionAuthoring authoring)
     {
-        var length = math.length(authoring.Range);
         var entity = GetEntity(TransformUsageFlags.Dynamic);
         AddComponent(entity, new RandomMotion
         {
@@ -40,6 +36,7 @@ class RandomMotionAuthoringBaker : Baker<RandomMotionAuthoring>
             TimeUntilNextRotation = 0,
             TimeBetweenRotations = authoring.TimeBetweenRotations,
             MaxRotationAngle = authoring.MaxRotationAngle,
+            CurrentTime = 0,
         });
     }
 }
@@ -48,23 +45,26 @@ class RandomMotionAuthoringBaker : Baker<RandomMotionAuthoring>
 [UpdateBefore(typeof(PhysicsSystemGroup))]
 public partial struct RandomMotionSystem : ISystem
 {
-    private Random random;
-
     [BurstCompile]
     public partial struct EntityRandomMotionJob : IJobEntity
     {
-        public Random Random;
         public float DeltaTime;
         private const float ROTATION_TOLERANCE = 2f;
 
         public void Execute(ref RandomMotion motion, ref PhysicsVelocity velocity, ref LocalTransform transform, in PhysicsMass mass)
         {
-            motion.CurrentTime += DeltaTime;
+            Random random = new Random();
+            random.InitState((uint) System.DateTime.Now.Ticks);
 
+            if (motion.CurrentTime == 0)
+            {
+                var deltaYDegrees = random.NextFloat(-180, 180);
+                transform = transform.RotateY(deltaYDegrees);
+            }
             motion.TimeUntilNextRotation -= DeltaTime;
             if (motion.TimeUntilNextRotation < 0)
             {
-                var deltaYDegrees = Random.NextFloat(-motion.MaxRotationAngle, motion.MaxRotationAngle);
+                var deltaYDegrees = random.NextFloat(-motion.MaxRotationAngle, motion.MaxRotationAngle);
                 motion.TimeUntilNextRotation = motion.TimeBetweenRotations;
                 motion.DesiredRotation = transform.RotateY(math.radians(deltaYDegrees)).Forward();
             }
@@ -76,6 +76,7 @@ public partial struct RandomMotionSystem : ISystem
                 var targetRotation = Quaternion.LookRotation(motion.DesiredRotation, transform.Up());
                 transform.Rotation = math.slerp(transform.Rotation, targetRotation, DeltaTime * 5);
             }
+            motion.CurrentTime += DeltaTime;
         }
     }
 
@@ -83,16 +84,15 @@ public partial struct RandomMotionSystem : ISystem
     public void OnCreate(ref SystemState state)
     {
         state.RequireForUpdate<RandomMotion>();
-        random = new Random();
-        random.InitState();
+        
     }
 
     [BurstCompile]
     public void OnUpdate(ref SystemState state)
     {
+
         state.Dependency = new EntityRandomMotionJob
         {
-            Random = random,
             DeltaTime = SystemAPI.Time.DeltaTime,
         }.Schedule(state.Dependency);
     }

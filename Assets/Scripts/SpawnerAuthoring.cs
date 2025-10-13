@@ -28,7 +28,7 @@ public class SpawnerAuthoring : MonoBehaviour
             {
                 Prefab = GetEntity(authoring.Prefab, TransformUsageFlags.Dynamic),
                 SpawnRate = authoring.SpawnRate,
-                Timer = authoring.SpawnRate // Initialize timer to spawn immediately
+                Timer = authoring.SpawnRate
             });
         }
     }
@@ -63,7 +63,6 @@ public partial struct SpawnerSystem : ISystem
             }
         }
         ecb.Playback(state.EntityManager);
-        
     }
 
     public void OnCreate(ref SystemState state) { }
