@@ -3,8 +3,6 @@ using Unity.Collections;
 using Unity.Entities;
 using Unity.Physics;
 using Unity.Physics.Systems;
-using Unity.Transforms;
-using UnityEngine;
 
 [UpdateInGroup(typeof(PhysicsSystemGroup))]
 [UpdateAfter(typeof(PhysicsSimulationGroup))]
@@ -12,7 +10,6 @@ public partial struct NewCollisionSystem : ISystem
 {
     private const int MAX_ENTITIES = 100;
     private static readonly SharedStatic<int> EntitiesCount = SharedStatic<int>.GetOrCreate<NewCollisionSystem>();
-    
     
     public void OnCreate(ref SystemState state)
     {
