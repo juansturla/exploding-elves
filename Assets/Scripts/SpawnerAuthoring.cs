@@ -71,6 +71,16 @@ public partial struct SpawnerSystem : ISystem
                 };
 
                 ecb.AddComponent(newEntity, newLifetimeComponent);
+                
+                // Get elf color from the prefab's ElfComponent
+                if (SystemAPI.HasComponent<ElfComponent>(spawner.ValueRO.Prefab))
+                {
+                    var elfColor = SystemAPI.GetComponent<ElfComponent>(spawner.ValueRO.Prefab).ElfColor;
+                    
+                    // Send spawn event
+                    var spawnEventEntity = ecb.CreateEntity();
+                    ecb.AddComponent(spawnEventEntity, new ElfSpawnedEvent { ElfColor = elfColor });
+                }
                 //state.Enabled = false;
             }
         }

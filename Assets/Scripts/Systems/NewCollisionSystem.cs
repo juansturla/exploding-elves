@@ -80,6 +80,11 @@ public partial struct NewCollisionSystem : ISystem
                     lifetimeBComponent.Timestamp = currentTimestamp;
                     ECB.SetComponent(elfAEntity, lifetimeAComponent);
                     ECB.SetComponent(elfBEntity, lifetimeBComponent);
+                    
+                    // Send spawn event for the new elf
+                    var spawnEvent = ECB.CreateEntity();
+                    ECB.AddComponent(spawnEvent, new ElfSpawnedEvent { ElfColor = elfAComponent.ElfColor });
+                    
                     // TODO: Find another way of referencing this entityCount without the static field
                     EntitiesCount.Data++;
                     ECB.Instantiate(elfAEntity);
@@ -87,6 +92,16 @@ public partial struct NewCollisionSystem : ISystem
             } 
             else
             {
+                // Send destroy events before destroying entities
+                var elfAColor = ElvesLookup[elfAEntity].ElfColor;
+                var elfBColor = ElvesLookup[elfBEntity].ElfColor;
+                
+                var destroyEventA = ECB.CreateEntity();
+                ECB.AddComponent(destroyEventA, new ElfDestroyedEvent { ElfColor = elfAColor });
+                
+                var destroyEventB = ECB.CreateEntity();
+                ECB.AddComponent(destroyEventB, new ElfDestroyedEvent { ElfColor = elfBColor });
+                
                 // TODO: Find another way of referencing this entityCount without the static field
                 EntitiesCount.Data -= 2;
                 ECB.DestroyEntity(elfAEntity);
