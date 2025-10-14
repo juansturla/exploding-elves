@@ -28,47 +28,62 @@ public partial struct NewCollisionSystem : ISystem
             PhysicsWorld = SystemAPI.GetSingleton<PhysicsWorldSingleton>().PhysicsWorld,
             ElvesLookup = SystemAPI.GetComponentLookup<ElfComponent>(true),
             LifetimeLookup = SystemAPI.GetComponentLookup<LifetimeComponent>(false),
-            currentTimestamp = SystemAPI.Time.ElapsedTime,
+            KillingFloorLookup = SystemAPI.GetComponentLookup<KillingFloorComponent>(true),
+            CurrentTimestamp = SystemAPI.Time.ElapsedTime,
         }.Schedule(SystemAPI.GetSingleton<SimulationSingleton>(), state.Dependency);
     }
 
     [BurstCompile]
     struct HandleCollisionsJob : ICollisionEventsJob
     {
-        public EntityCommandBuffer ECB;
         [ReadOnly] public PhysicsWorld PhysicsWorld;
         [ReadOnly] public ComponentLookup<ElfComponent> ElvesLookup;
+        [ReadOnly] public ComponentLookup<KillingFloorComponent> KillingFloorLookup;
+        public EntityCommandBuffer ECB;
         public ComponentLookup<LifetimeComponent> LifetimeLookup;
-        public double currentTimestamp;
+        public double CurrentTimestamp;
 
         public void Execute(CollisionEvent collisionEvent)
         {
-            var isElfA = ElvesLookup.HasComponent(collisionEvent.EntityA);
-            var isElfB = ElvesLookup.HasComponent(collisionEvent.EntityB);
+            var entityA = collisionEvent.EntityA;
+            var entityB = collisionEvent.EntityB;
+            
+            var isElfA = ElvesLookup.HasComponent(entityA);
+            var isElfB = ElvesLookup.HasComponent(entityB);
+            
+            var isKillingFloorA = KillingFloorLookup.HasComponent(entityA);
+            var isKillingFloorB = KillingFloorLookup.HasComponent(entityB);
+
+            if (isKillingFloorA && isElfB)
+            {
+                DestroyElfEntity(entityB);
+                return;
+            }
+            if(isKillingFloorB && isElfA)
+            {
+                DestroyElfEntity(entityA);
+                return;
+            }
+
             if (!isElfA || !isElfB)
                 return;
 
             var details = collisionEvent.CalculateDetails(ref PhysicsWorld);
             if (details.EstimatedImpulse < 1)
-            {
                 return;
-            }
 
-            var elfAEntity = collisionEvent.EntityA;
-            var elfBEntity = collisionEvent.EntityB;
-
-            var lifetimeAComponent = LifetimeLookup[elfAEntity];
-            var lifetimeBComponent = LifetimeLookup[elfBEntity];
+            var lifetimeAComponent = LifetimeLookup[entityA];
+            var lifetimeBComponent = LifetimeLookup[entityB];
 
             // entity cannot collide within the first 2 seconds of it's creation
-            var timestampThreshold = currentTimestamp - 2;
+            var timestampThreshold = CurrentTimestamp - 2;
             if (lifetimeAComponent.Timestamp > timestampThreshold || lifetimeBComponent.Timestamp > timestampThreshold)
             {
                 return;
             }
             
-            var elfAComponent = ElvesLookup[elfAEntity];
-            var elfBComponent = ElvesLookup[elfBEntity];
+            var elfAComponent = ElvesLookup[entityA];
+            var elfBComponent = ElvesLookup[entityB];
 
             if (elfAComponent.ElfColor == elfBComponent.ElfColor)
             {
@@ -76,10 +91,10 @@ public partial struct NewCollisionSystem : ISystem
                 if (EntitiesCount.Data < MAX_ENTITIES)
                 {
                     // Update the timestamps to avoid collisioning after colliding
-                    lifetimeAComponent.Timestamp = currentTimestamp;
-                    lifetimeBComponent.Timestamp = currentTimestamp;
-                    ECB.SetComponent(elfAEntity, lifetimeAComponent);
-                    ECB.SetComponent(elfBEntity, lifetimeBComponent);
+                    lifetimeAComponent.Timestamp = CurrentTimestamp;
+                    lifetimeBComponent.Timestamp = CurrentTimestamp;
+                    ECB.SetComponent(entityA, lifetimeAComponent);
+                    ECB.SetComponent(entityB, lifetimeBComponent);
                     
                     // Send spawn event for the new elf
                     var spawnEvent = ECB.CreateEntity();
@@ -87,26 +102,26 @@ public partial struct NewCollisionSystem : ISystem
                     
                     // TODO: Find another way of referencing this entityCount without the static field
                     EntitiesCount.Data++;
-                    ECB.Instantiate(elfAEntity);
+                    ECB.Instantiate(entityA);
                 }
             } 
             else
             {
-                // Send destroy events before destroying entities
-                var elfAColor = ElvesLookup[elfAEntity].ElfColor;
-                var elfBColor = ElvesLookup[elfBEntity].ElfColor;
-                
-                var destroyEventA = ECB.CreateEntity();
-                ECB.AddComponent(destroyEventA, new ElfDestroyedEvent { ElfColor = elfAColor });
-                
-                var destroyEventB = ECB.CreateEntity();
-                ECB.AddComponent(destroyEventB, new ElfDestroyedEvent { ElfColor = elfBColor });
-                
-                // TODO: Find another way of referencing this entityCount without the static field
-                EntitiesCount.Data -= 2;
-                ECB.DestroyEntity(elfAEntity);
-                ECB.DestroyEntity(elfBEntity);
+                DestroyElfEntity(entityA);
+                DestroyElfEntity(entityB);
             }
+        }
+
+        private void DestroyElfEntity(Entity entityB)
+        {
+            var elfBColor = ElvesLookup[entityB].ElfColor;
+                
+            var destroyEventB = ECB.CreateEntity();
+            ECB.AddComponent(destroyEventB, new ElfDestroyedEvent { ElfColor = elfBColor });
+                
+            // TODO: Find another way of referencing this entityCount without the static field
+            EntitiesCount.Data -= 1;
+            ECB.DestroyEntity(entityB);
         }
     }
 }
