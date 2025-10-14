@@ -45,26 +45,26 @@ class RandomMotionAuthoringBaker : Baker<RandomMotionAuthoring>
 [UpdateBefore(typeof(PhysicsSystemGroup))]
 public partial struct RandomMotionSystem : ISystem
 {
+    private Random random;
+
     [BurstCompile]
     public partial struct EntityRandomMotionJob : IJobEntity
     {
+        public Random Random;
         public float DeltaTime;
         private const float ROTATION_TOLERANCE = 2f;
 
         public void Execute(ref RandomMotion motion, ref PhysicsVelocity velocity, ref LocalTransform transform, in PhysicsMass mass)
         {
-            Random random = new Random();
-            random.InitState((uint) System.DateTime.Now.Ticks);
-
             if (motion.CurrentTime == 0)
             {
-                var deltaYDegrees = random.NextFloat(-180, 180);
+                var deltaYDegrees = Random.NextFloat(-180, 180);
                 transform = transform.RotateY(deltaYDegrees);
             }
             motion.TimeUntilNextRotation -= DeltaTime;
             if (motion.TimeUntilNextRotation < 0)
             {
-                var deltaYDegrees = random.NextFloat(-motion.MaxRotationAngle, motion.MaxRotationAngle);
+                var deltaYDegrees = Random.NextFloat(-motion.MaxRotationAngle, motion.MaxRotationAngle);
                 motion.TimeUntilNextRotation = motion.TimeBetweenRotations;
                 motion.DesiredRotation = transform.RotateY(math.radians(deltaYDegrees)).Forward();
             }
@@ -80,11 +80,11 @@ public partial struct RandomMotionSystem : ISystem
         }
     }
 
-    [BurstCompile]
     public void OnCreate(ref SystemState state)
     {
         state.RequireForUpdate<RandomMotion>();
-        
+        random = new Random();
+        random.InitState((uint) System.DateTime.Now.Ticks);
     }
 
     [BurstCompile]
@@ -94,6 +94,7 @@ public partial struct RandomMotionSystem : ISystem
         state.Dependency = new EntityRandomMotionJob
         {
             DeltaTime = SystemAPI.Time.DeltaTime,
+            Random = random,
         }.Schedule(state.Dependency);
     }
 }

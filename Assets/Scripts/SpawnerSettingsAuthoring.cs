@@ -3,14 +3,14 @@ using UnityEngine;
 
 public struct SpawnerSettings : IComponentData
 {
-    public float SpawnRate; // seconds between spawns
+    public float TimeBetweenSpawns; // seconds between spawns
 }
 
 public class SpawnerSettingsAuthoring : MonoBehaviour
 {
     [Tooltip("Global time between spawns (seconds)")]
-    [Range(0.1f, 10f)]
-    public float SpawnRate = 1f;
+    [Range(0.5f, 10f)]
+    public float TimeBetweenSpawns = 1f;
 }
 
 public class SpawnerSettingsBaker : Baker<SpawnerSettingsAuthoring>
@@ -20,7 +20,7 @@ public class SpawnerSettingsBaker : Baker<SpawnerSettingsAuthoring>
         var entity = GetEntity(TransformUsageFlags.None);
         AddComponent(entity, new SpawnerSettings
         {
-            SpawnRate = authoring.SpawnRate
+            TimeBetweenSpawns = authoring.TimeBetweenSpawns
         });
     }
 }

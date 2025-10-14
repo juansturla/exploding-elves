@@ -4,9 +4,8 @@ using Unity.Entities;
 using Unity.Mathematics;
 using Unity.Physics.Systems;
 
-
 [UpdateInGroup(typeof(PhysicsSystemGroup))]
-[UpdateAfter(typeof(NewCollisionSystem))]
+[UpdateAfter(typeof(PendingDestroyCleanupSystem))]
 public partial struct ElfCountEachFrameSystem : ISystem
 {
     [BurstCompile]
@@ -22,7 +21,6 @@ public partial struct ElfCountEachFrameSystem : ISystem
         countData.ValueRW.GreenCount = 0;
         countData.ValueRW.BlueCount = 0;
         countData.ValueRW.WhiteCount = 0;
-        // Process spawn events
         foreach (var (elfComponent, entity) in SystemAPI.Query<RefRO<ElfComponent>>().WithEntityAccess())
         {
             switch (elfComponent.ValueRO.ElfColor)

@@ -103,19 +103,20 @@ using Unity.Transforms;
             var elfAComponent = ElvesLookup[entityA];
             var elfBComponent = ElvesLookup[entityB];
 
+            lifetimeAComponent.Timestamp = CurrentTimestamp;
+            lifetimeBComponent.Timestamp = CurrentTimestamp;
+            // Avoid setting components if either is already marked for destroy
+            if (!ProcessedDestroys.Contains(entityA))
+                ECB.SetComponent(entityA, lifetimeAComponent);
+            if (!ProcessedDestroys.Contains(entityB))
+                ECB.SetComponent(entityB, lifetimeBComponent);
+            
             if (elfAComponent.ElfColor == elfBComponent.ElfColor)
             {
                 
                 if (ElfCountData.TotalCount < MAX_ENTITIES)
                 {
                     // Update the timestamps to avoid collisioning after colliding
-                    lifetimeAComponent.Timestamp = CurrentTimestamp;
-                    lifetimeBComponent.Timestamp = CurrentTimestamp;
-                    // Avoid setting components if either is already marked for destroy
-                    if (!ProcessedDestroys.Contains(entityA))
-                        ECB.SetComponent(entityA, lifetimeAComponent);
-                    if (!ProcessedDestroys.Contains(entityB))
-                        ECB.SetComponent(entityB, lifetimeBComponent);
                     
                     // Rotate transforms to look away from each other; update RandomMotion.DesiredRotation
                     var transformRotated = new LocalTransform();

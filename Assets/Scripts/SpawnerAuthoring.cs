@@ -8,7 +8,7 @@ using Unity.Mathematics;
 public struct Spawner : IComponentData
 {
     public Entity Prefab;
-    public float SpawnRate;
+    public float TimeBetweenSpawns;
     public float Timer;
 }
 
@@ -16,9 +16,8 @@ public class SpawnerAuthoring : MonoBehaviour
 {
     [Tooltip("Elf prefab to be spawned")]
     public GameObject Prefab;
-    [Tooltip("Time between spawns (in seconds)")]
-    [Range(1,10)]
-    public float SpawnRate = 1f;
+    [Tooltip("Time between spawns (in seconds). Can be changed in the SpawnRateGroup GameObject or in the player UI")]
+    private readonly float timeBetweenSpawns = 1f;
 
     public class SpawnerBaker : Baker<SpawnerAuthoring>
     {
@@ -28,8 +27,8 @@ public class SpawnerAuthoring : MonoBehaviour
             AddComponent(entity, new Spawner
             {
                 Prefab = GetEntity(authoring.Prefab, TransformUsageFlags.Dynamic),
-                SpawnRate = authoring.SpawnRate,
-                Timer = authoring.SpawnRate
+                TimeBetweenSpawns = authoring.timeBetweenSpawns,
+                Timer = authoring.timeBetweenSpawns
             });
         }
     }
@@ -44,10 +43,10 @@ public partial struct SpawnerSystem : ISystem
         var ecb = new EntityCommandBuffer(Allocator.Temp);
 
         // If a SpawnerSettings singleton exists, use it to drive spawn rates
-        float settingsSpawnRate = -1f;
+        float timeBetweenSpawns = -1f;
         if (SystemAPI.HasSingleton<SpawnerSettings>())
         {
-            settingsSpawnRate = math.max(0.01f, SystemAPI.GetSingleton<SpawnerSettings>().SpawnRate);
+            timeBetweenSpawns = math.max(0.5f, SystemAPI.GetSingleton<SpawnerSettings>().TimeBetweenSpawns);
         }
 
         float elfCount = 0;
@@ -56,12 +55,11 @@ public partial struct SpawnerSystem : ISystem
             elfCount = SystemAPI.GetSingleton<ElfCountData>().TotalCount;
         }
 
-
         foreach (var (spawner, entity) in SystemAPI.Query<RefRW<Spawner>>().WithEntityAccess())
         {
-            if (settingsSpawnRate > 0f)
+            if (timeBetweenSpawns > 0f)
             {
-                spawner.ValueRW.SpawnRate = settingsSpawnRate;
+                spawner.ValueRW.TimeBetweenSpawns = timeBetweenSpawns;
             }
             spawner.ValueRW.Timer -= SystemAPI.Time.DeltaTime;
 
@@ -70,7 +68,7 @@ public partial struct SpawnerSystem : ISystem
                 var targetPosition =
                     LocalTransform.FromPosition(SystemAPI.GetComponent<LocalTransform>(entity).Position);
                 ecb.SetComponent(spawner.ValueRO.Prefab, targetPosition);
-                spawner.ValueRW.Timer = spawner.ValueRO.SpawnRate;
+                spawner.ValueRW.Timer = spawner.ValueRO.TimeBetweenSpawns;
                 var newEntity = ecb.Instantiate(spawner.ValueRO.Prefab);
                 LifetimeComponent newLifetimeComponent = new LifetimeComponent()
                 {

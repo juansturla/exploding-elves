@@ -10,7 +10,7 @@ public class SpawnRateUI : MonoBehaviour
     public Button decreaseButton;
     public TMP_Text valueLabel;
     public float stepSeconds = 0.5f;
-    public float minSeconds = 1f;
+    public float minSeconds = 0.5f;
     public float maxSeconds = 10f;
 
     private EntityManager entityManager;
@@ -46,9 +46,10 @@ public class SpawnRateUI : MonoBehaviour
         if (!hasSettings)
         {
             hasSettings = TryGetSettingsEntity(out settingsEntity);
-            if (!hasSettings) return 1f;
+            if (!hasSettings) 
+                return 1f;
         }
-        return entityManager.GetComponentData<SpawnerSettings>(settingsEntity).SpawnRate;
+        return entityManager.GetComponentData<SpawnerSettings>(settingsEntity).TimeBetweenSpawns;
     }
 
     private void SetCurrent(float value)
@@ -56,10 +57,11 @@ public class SpawnRateUI : MonoBehaviour
         if (!hasSettings)
         {
             hasSettings = TryGetSettingsEntity(out settingsEntity);
-            if (!hasSettings) return;
+            if (!hasSettings) 
+                return;
         }
         var data = entityManager.GetComponentData<SpawnerSettings>(settingsEntity);
-        data.SpawnRate = math.clamp(value, minSeconds, maxSeconds);
+        data.TimeBetweenSpawns = math.clamp(value, minSeconds, maxSeconds);
         entityManager.SetComponentData(settingsEntity, data);
         RefreshLabel();
     }
