@@ -15,8 +15,33 @@ PrefabInstance:
       objectReference: {fileID: 2100000, guid: 165bf7a564e1942359d6afeec60a1ea1, type: 2}
     - target: {fileID: 1334445961631288056, guid: 14f52680dc4da4f0fb95ab9e14691d83,
         type: 3}
-      propertyPath: m_LinearDamping
+      propertyPath: m_GravityFactor
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1334445961631288056, guid: 14f52680dc4da4f0fb95ab9e14691d83,
+        type: 3}
+      propertyPath: m_LinearDamping
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1334445961631288056, guid: 14f52680dc4da4f0fb95ab9e14691d83,
+        type: 3}
+      propertyPath: m_InertiaTensor.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1334445961631288056, guid: 14f52680dc4da4f0fb95ab9e14691d83,
+        type: 3}
+      propertyPath: m_InertiaTensor.y
+      value: 0.4
+      objectReference: {fileID: 0}
+    - target: {fileID: 1334445961631288056, guid: 14f52680dc4da4f0fb95ab9e14691d83,
+        type: 3}
+      propertyPath: m_InertiaTensor.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1334445961631288056, guid: 14f52680dc4da4f0fb95ab9e14691d83,
+        type: 3}
+      propertyPath: m_OverrideDefaultMassDistribution
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2476431425342377002, guid: 14f52680dc4da4f0fb95ab9e14691d83,
         type: 3}
