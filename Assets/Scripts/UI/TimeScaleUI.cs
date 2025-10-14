@@ -5,61 +5,53 @@ using UnityEngine.UI;
 public class TimeScaleUI : MonoBehaviour
 {
     [Header("UI Elements")]
-    [SerializeField] private Slider timeScaleSlider;
-    [SerializeField] private Button increaseButton;
-    [SerializeField] private Button decreaseButton;
+    [SerializeField] private Button toggleButton;
     [SerializeField] private TMP_Text valueLabel;
 
-    [Header("Settings")]
-    [SerializeField] private float minScale = 0.5f;   // paused
-    [SerializeField] private float maxScale = 3.0f;   // 3x speed
-    [SerializeField] private float step = 0.5f;
+    private readonly float[] cycleSpeeds = new float[] { 1f, 2f, 3f };
+    private int currentIndex = 0;
 
     private void Awake()
     {
-        if (timeScaleSlider != null)
+        // Initialize index to the closest defined speed to current timescale
+        currentIndex = GetClosestIndex(Time.timeScale);
+        ApplyCurrentSpeed();
+
+        if (toggleButton != null)
         {
-            timeScaleSlider.minValue = minScale;
-            timeScaleSlider.maxValue = maxScale;
-            timeScaleSlider.value = Time.timeScale;
-            timeScaleSlider.onValueChanged.AddListener(OnSliderChanged);
+            toggleButton.onClick.AddListener(CycleSpeed);
         }
-        if (increaseButton != null) increaseButton.onClick.AddListener(OnIncrease);
-        if (decreaseButton != null) decreaseButton.onClick.AddListener(OnDecrease);
-        RefreshLabel();
     }
 
-    private void OnSliderChanged(float value)
+    private void CycleSpeed()
     {
-        SetTimeScale(value);
+        currentIndex = (currentIndex + 1) % cycleSpeeds.Length;
+        ApplyCurrentSpeed();
     }
 
-    private void OnIncrease()
+    private void ApplyCurrentSpeed()
     {
-        var next = Mathf.Clamp(Time.timeScale + step, minScale, maxScale);
-        SetTimeScale(next);
-        if (timeScaleSlider != null) timeScaleSlider.value = next;
-    }
-
-    private void OnDecrease()
-    {
-        var next = Mathf.Clamp(Time.timeScale - step, minScale, maxScale);
-        SetTimeScale(next);
-        if (timeScaleSlider != null) timeScaleSlider.value = next;
-    }
-
-    private void SetTimeScale(float value)
-    {
-        Time.timeScale = value;
-        RefreshLabel();
-    }
-
-    private void RefreshLabel()
-    {
+        Time.timeScale = cycleSpeeds[currentIndex];
         if (valueLabel != null)
         {
-            valueLabel.text = $"Time Scale: {Time.timeScale:0.00}x";
+            valueLabel.text = $"{cycleSpeeds[currentIndex]:0}x";
         }
+    }
+
+    private int GetClosestIndex(float value)
+    {
+        int best = 0;
+        float bestDiff = Mathf.Abs(cycleSpeeds[0] - value);
+        for (int i = 1; i < cycleSpeeds.Length; i++)
+        {
+            float d = Mathf.Abs(cycleSpeeds[i] - value);
+            if (d < bestDiff)
+            {
+                best = i;
+                bestDiff = d;
+            }
+        }
+        return best;
     }
 }
 
