@@ -50,6 +50,13 @@ public partial struct SpawnerSystem : ISystem
             settingsSpawnRate = math.max(0.01f, SystemAPI.GetSingleton<SpawnerSettings>().SpawnRate);
         }
 
+        float elfCount = 0;
+        if (SystemAPI.HasSingleton<SpawnerSettings>())
+        {
+            elfCount = SystemAPI.GetSingleton<ElfCountData>().TotalCount;
+        }
+
+
         foreach (var (spawner, entity) in SystemAPI.Query<RefRW<Spawner>>().WithEntityAccess())
         {
             if (settingsSpawnRate > 0f)
@@ -58,7 +65,7 @@ public partial struct SpawnerSystem : ISystem
             }
             spawner.ValueRW.Timer -= SystemAPI.Time.DeltaTime;
 
-            if (spawner.ValueRO.Timer <= 0f && NewCollisionSystem.EntitiesCount.Data < NewCollisionSystem.MAX_ENTITIES)
+            if (spawner.ValueRO.Timer <= 0f && elfCount < NewCollisionSystem.MAX_ENTITIES)
             {
                 var targetPosition =
                     LocalTransform.FromPosition(SystemAPI.GetComponent<LocalTransform>(entity).Position);
@@ -72,21 +79,16 @@ public partial struct SpawnerSystem : ISystem
 
                 ecb.AddComponent(newEntity, newLifetimeComponent);
                 
-                // Get elf color from the prefab's ElfComponent
-                if (SystemAPI.HasComponent<ElfComponent>(spawner.ValueRO.Prefab))
-                {
-                    var elfColor = SystemAPI.GetComponent<ElfComponent>(spawner.ValueRO.Prefab).ElfColor;
-                    
-                    // Send spawn event
-                    var spawnEventEntity = ecb.CreateEntity();
-                    ecb.AddComponent(spawnEventEntity, new ElfSpawnedEvent { ElfColor = elfColor });
-                }
                 //state.Enabled = false;
             }
         }
         ecb.Playback(state.EntityManager);
     }
 
-    public void OnCreate(ref SystemState state) { }
+    public void OnCreate(ref SystemState state)
+    {
+        state.RequireForUpdate<SpawnerSettings>();
+        state.RequireForUpdate<ElfCountData>();
+    }
     public void OnDestroy(ref SystemState state) { }
 }

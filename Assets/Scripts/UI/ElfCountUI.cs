@@ -89,8 +89,7 @@ public class ElfCountUI : MonoBehaviour
         // Update total count
         if (totalCountText != null)
         {
-            var total = countData.RedCount + countData.GreenCount + countData.BlueCount + countData.WhiteCount;
-            totalCountText.text = $"Total: {total}";
+            totalCountText.text = $"Total: {countData.TotalCount}";
         }
     }
 }

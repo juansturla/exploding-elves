@@ -8,15 +8,15 @@ using Unity.Transforms;
 
 [UpdateInGroup(typeof(PhysicsSystemGroup))]
 [UpdateAfter(typeof(PhysicsSimulationGroup))]
-public partial struct NewCollisionSystem : ISystem
+    public partial struct NewCollisionSystem : ISystem
 {
-    public const int MAX_ENTITIES = 100;
-    public static readonly SharedStatic<int> EntitiesCount = SharedStatic<int>.GetOrCreate<NewCollisionSystem>();
+    public const int MAX_ENTITIES = 300;
     
     public void OnCreate(ref SystemState state)
     {
         state.RequireForUpdate<SimulationSingleton>();
         state.RequireForUpdate<PhysicsWorldSingleton>();
+        state.RequireForUpdate<ElfCountData>();
     }
 
     [BurstCompile]
@@ -35,6 +35,7 @@ public partial struct NewCollisionSystem : ISystem
             KillingFloorLookup = SystemAPI.GetComponentLookup<KillingFloorComponent>(true),
             TransformLookup = SystemAPI.GetComponentLookup<LocalTransform>(false),
             RandomMotionLookup = SystemAPI.GetComponentLookup<RandomMotion>(false),
+            ElfCountData = SystemAPI.GetSingleton<ElfCountData>(),
             CurrentTimestamp = SystemAPI.Time.ElapsedTime,
             ProcessedSpawns = processedSpawns,
             ProcessedDestroys = processedDestroys,
@@ -58,6 +59,7 @@ public partial struct NewCollisionSystem : ISystem
         public double CurrentTimestamp;
         public NativeParallelHashSet<Entity> ProcessedSpawns;
         public NativeParallelHashSet<Entity> ProcessedDestroys;
+        public ElfCountData ElfCountData;
 
         public void Execute(CollisionEvent collisionEvent)
         {
@@ -104,7 +106,7 @@ public partial struct NewCollisionSystem : ISystem
             if (elfAComponent.ElfColor == elfBComponent.ElfColor)
             {
                 
-                if (EntitiesCount.Data < MAX_ENTITIES)
+                if (ElfCountData.TotalCount < MAX_ENTITIES)
                 {
                     // Update the timestamps to avoid collisioning after colliding
                     lifetimeAComponent.Timestamp = CurrentTimestamp;
@@ -138,12 +140,6 @@ public partial struct NewCollisionSystem : ISystem
                     // Deduplicate per-frame spawn from this source entity
                     if (ProcessedSpawns.Add(entityA))
                     {
-                        // Send spawn event for the new elf
-                        var spawnEvent = ECB.CreateEntity();
-                        ECB.AddComponent(spawnEvent, new ElfSpawnedEvent { ElfColor = elfAComponent.ElfColor });
-                        
-                        // TODO: Find another way of referencing this entityCount without the static field
-                        EntitiesCount.Data++;
                         var newEntity = ECB.Instantiate(entityA);
                         
                         // Set transform and desired rotation via ECB (deferred entity)
@@ -174,13 +170,11 @@ public partial struct NewCollisionSystem : ISystem
             }
             var elfBColor = ElvesLookup[entity].ElfColor;
                 
-            var destroyEvent = ECB.CreateEntity();
-            ECB.AddComponent(destroyEvent, new ElfDestroyedEvent { ElfColor = elfBColor });
-                
-            // TODO: Find another way of referencing this entityCount without the static field
-            EntitiesCount.Data -= 1;
             // Mark for destruction; actual destruction happens in cleanup system
-            ECB.AddComponent<PendingDestroy>(entity);
+            ECB.AddComponent(entity, new PendingDestroy()
+            {
+                ElfColor = elfBColor,
+            });
         }
     }
 }
