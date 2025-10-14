@@ -1,15 +1,17 @@
 using Unity.Burst;
 using Unity.Collections;
 using Unity.Entities;
+using Unity.Mathematics;
 using Unity.Physics;
 using Unity.Physics.Systems;
+using Unity.Transforms;
 
 [UpdateInGroup(typeof(PhysicsSystemGroup))]
 [UpdateAfter(typeof(PhysicsSimulationGroup))]
 public partial struct NewCollisionSystem : ISystem
 {
-    private const int MAX_ENTITIES = 100;
-    private static readonly SharedStatic<int> EntitiesCount = SharedStatic<int>.GetOrCreate<NewCollisionSystem>();
+    public const int MAX_ENTITIES = 100;
+    public static readonly SharedStatic<int> EntitiesCount = SharedStatic<int>.GetOrCreate<NewCollisionSystem>();
     
     public void OnCreate(ref SystemState state)
     {
@@ -20,7 +22,9 @@ public partial struct NewCollisionSystem : ISystem
     [BurstCompile]
     public void OnUpdate(ref SystemState state)
     {
-        var ecb = SystemAPI.GetSingletonRW<EndInitializationEntityCommandBufferSystem.Singleton>().ValueRW.CreateCommandBuffer(state.WorldUnmanaged);
+        var ecb = SystemAPI.GetSingletonRW<EndSimulationEntityCommandBufferSystem.Singleton>().ValueRW.CreateCommandBuffer(state.WorldUnmanaged);
+        var processedSpawns = new NativeParallelHashSet<Entity>(1024, Allocator.TempJob);
+        var processedDestroys = new NativeParallelHashSet<Entity>(1024, Allocator.TempJob);
 
         state.Dependency = new HandleCollisionsJob
         {
@@ -29,8 +33,16 @@ public partial struct NewCollisionSystem : ISystem
             ElvesLookup = SystemAPI.GetComponentLookup<ElfComponent>(true),
             LifetimeLookup = SystemAPI.GetComponentLookup<LifetimeComponent>(false),
             KillingFloorLookup = SystemAPI.GetComponentLookup<KillingFloorComponent>(true),
+            TransformLookup = SystemAPI.GetComponentLookup<LocalTransform>(false),
+            RandomMotionLookup = SystemAPI.GetComponentLookup<RandomMotion>(false),
             CurrentTimestamp = SystemAPI.Time.ElapsedTime,
+            ProcessedSpawns = processedSpawns,
+            ProcessedDestroys = processedDestroys,
         }.Schedule(SystemAPI.GetSingleton<SimulationSingleton>(), state.Dependency);
+
+        state.Dependency.Complete();
+        processedSpawns.Dispose();
+        processedDestroys.Dispose();
     }
 
     [BurstCompile]
@@ -39,9 +51,13 @@ public partial struct NewCollisionSystem : ISystem
         [ReadOnly] public PhysicsWorld PhysicsWorld;
         [ReadOnly] public ComponentLookup<ElfComponent> ElvesLookup;
         [ReadOnly] public ComponentLookup<KillingFloorComponent> KillingFloorLookup;
+        public ComponentLookup<LocalTransform> TransformLookup;
+        public ComponentLookup<RandomMotion> RandomMotionLookup;
         public EntityCommandBuffer ECB;
         public ComponentLookup<LifetimeComponent> LifetimeLookup;
         public double CurrentTimestamp;
+        public NativeParallelHashSet<Entity> ProcessedSpawns;
+        public NativeParallelHashSet<Entity> ProcessedDestroys;
 
         public void Execute(CollisionEvent collisionEvent)
         {
@@ -56,12 +72,12 @@ public partial struct NewCollisionSystem : ISystem
 
             if (isKillingFloorA && isElfB)
             {
-                DestroyElfEntity(entityB);
+                MarkElfForDestroy(entityB);
                 return;
             }
             if(isKillingFloorB && isElfA)
             {
-                DestroyElfEntity(entityA);
+                MarkElfForDestroy(entityA);
                 return;
             }
 
@@ -75,8 +91,8 @@ public partial struct NewCollisionSystem : ISystem
             var lifetimeAComponent = LifetimeLookup[entityA];
             var lifetimeBComponent = LifetimeLookup[entityB];
 
-            // entity cannot collide within the first 2 seconds of it's creation
-            var timestampThreshold = CurrentTimestamp - 2;
+            // entity cannot collide within the first 0.5 seconds of it's creation
+            var timestampThreshold = CurrentTimestamp - 0.5f;
             if (lifetimeAComponent.Timestamp > timestampThreshold || lifetimeBComponent.Timestamp > timestampThreshold)
             {
                 return;
@@ -93,35 +109,78 @@ public partial struct NewCollisionSystem : ISystem
                     // Update the timestamps to avoid collisioning after colliding
                     lifetimeAComponent.Timestamp = CurrentTimestamp;
                     lifetimeBComponent.Timestamp = CurrentTimestamp;
-                    ECB.SetComponent(entityA, lifetimeAComponent);
-                    ECB.SetComponent(entityB, lifetimeBComponent);
+                    // Avoid setting components if either is already marked for destroy
+                    if (!ProcessedDestroys.Contains(entityA))
+                        ECB.SetComponent(entityA, lifetimeAComponent);
+                    if (!ProcessedDestroys.Contains(entityB))
+                        ECB.SetComponent(entityB, lifetimeBComponent);
                     
-                    // Send spawn event for the new elf
-                    var spawnEvent = ECB.CreateEntity();
-                    ECB.AddComponent(spawnEvent, new ElfSpawnedEvent { ElfColor = elfAComponent.ElfColor });
-                    
-                    // TODO: Find another way of referencing this entityCount without the static field
-                    EntitiesCount.Data++;
-                    ECB.Instantiate(entityA);
+                    // Rotate transforms to look away from each other; update RandomMotion.DesiredRotation
+                    var transformRotated = new LocalTransform();
+                    if (TransformLookup.HasComponent(entityA))
+                    {
+                        transformRotated = TransformLookup[entityA];
+                    }
+                    if (TransformLookup.HasComponent(entityB))
+                    {
+                        transformRotated = transformRotated.RotateY(math.radians(120));
+                        var tB = TransformLookup[entityB];
+                        tB.Rotation = transformRotated.Rotation;
+                        TransformLookup[entityB] = tB;
+                        if (RandomMotionLookup.HasComponent(entityB))
+                        {
+                            var rmB = RandomMotionLookup[entityB];
+                            rmB.DesiredRotation = transformRotated.Forward();
+                            RandomMotionLookup[entityB] = rmB;
+                        }
+                    }
+
+                    // Deduplicate per-frame spawn from this source entity
+                    if (ProcessedSpawns.Add(entityA))
+                    {
+                        // Send spawn event for the new elf
+                        var spawnEvent = ECB.CreateEntity();
+                        ECB.AddComponent(spawnEvent, new ElfSpawnedEvent { ElfColor = elfAComponent.ElfColor });
+                        
+                        // TODO: Find another way of referencing this entityCount without the static field
+                        EntitiesCount.Data++;
+                        var newEntity = ECB.Instantiate(entityA);
+                        
+                        // Set transform and desired rotation via ECB (deferred entity)
+                        ECB.SetComponent(newEntity, transformRotated);
+                        var rmN = RandomMotionLookup[entityA];
+                        rmN.DesiredRotation = transformRotated.Forward();
+                        ECB.SetComponent(newEntity, rmN);
+                    }
                 }
             } 
             else
             {
-                DestroyElfEntity(entityA);
-                DestroyElfEntity(entityB);
+                MarkElfForDestroy(entityA);
+                MarkElfForDestroy(entityB);
             }
         }
 
-        private void DestroyElfEntity(Entity entityB)
+        private void MarkElfForDestroy(Entity entity)
         {
-            var elfBColor = ElvesLookup[entityB].ElfColor;
+            // If entity was already destroyed earlier in the frame, skip
+            if (!ElvesLookup.HasComponent(entity))
+            {
+                return;
+            }
+            if (!ProcessedDestroys.Add(entity))
+            {
+                return;
+            }
+            var elfBColor = ElvesLookup[entity].ElfColor;
                 
-            var destroyEventB = ECB.CreateEntity();
-            ECB.AddComponent(destroyEventB, new ElfDestroyedEvent { ElfColor = elfBColor });
+            var destroyEvent = ECB.CreateEntity();
+            ECB.AddComponent(destroyEvent, new ElfDestroyedEvent { ElfColor = elfBColor });
                 
             // TODO: Find another way of referencing this entityCount without the static field
             EntitiesCount.Data -= 1;
-            ECB.DestroyEntity(entityB);
+            // Mark for destruction; actual destruction happens in cleanup system
+            ECB.AddComponent<PendingDestroy>(entity);
         }
     }
 }

@@ -58,7 +58,7 @@ public partial struct SpawnerSystem : ISystem
             }
             spawner.ValueRW.Timer -= SystemAPI.Time.DeltaTime;
 
-            if (spawner.ValueRO.Timer <= 0f)
+            if (spawner.ValueRO.Timer <= 0f && NewCollisionSystem.EntitiesCount.Data < NewCollisionSystem.MAX_ENTITIES)
             {
                 var targetPosition =
                     LocalTransform.FromPosition(SystemAPI.GetComponent<LocalTransform>(entity).Position);
