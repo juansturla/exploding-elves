@@ -45,8 +45,6 @@ class RandomMotionAuthoringBaker : Baker<RandomMotionAuthoring>
 [UpdateBefore(typeof(PhysicsSystemGroup))]
 public partial struct RandomMotionSystem : ISystem
 {
-    private Random random;
-
     [BurstCompile]
     public partial struct EntityRandomMotionJob : IJobEntity
     {
@@ -80,17 +78,16 @@ public partial struct RandomMotionSystem : ISystem
         }
     }
 
+    [BurstCompile]
     public void OnCreate(ref SystemState state)
     {
         state.RequireForUpdate<RandomMotion>();
-        random = new Random();
-        random.InitState((uint) System.DateTime.Now.Ticks);
     }
 
-    [BurstCompile]
     public void OnUpdate(ref SystemState state)
     {
-
+        Random random = new Random();
+        random.InitState((uint) System.DateTime.Now.Ticks);
         state.Dependency = new EntityRandomMotionJob
         {
             DeltaTime = SystemAPI.Time.DeltaTime,
