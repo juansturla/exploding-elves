@@ -2252,7 +2252,7 @@ MonoBehaviour:
   decreaseButton: {fileID: 1874183922}
   valueLabel: {fileID: 1287488987}
   stepSeconds: 0.5
-  minSeconds: 1
+  minSeconds: 0.5
   maxSeconds: 10
 --- !u!114 &1552109373
 MonoBehaviour:

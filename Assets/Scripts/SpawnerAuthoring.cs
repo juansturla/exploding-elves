@@ -12,8 +12,6 @@ public class SpawnerAuthoring : MonoBehaviour
 {
     [Tooltip("Elf prefab to be spawned")]
     public GameObject Prefab;
-    [Tooltip("Time between spawns (in seconds). Can be changed in the SpawnRateGroup GameObject or in the player UI")]
-    private readonly float timeBetweenSpawns = 1f;
 
     public class SpawnerBaker : Baker<SpawnerAuthoring>
     {
@@ -23,8 +21,8 @@ public class SpawnerAuthoring : MonoBehaviour
             AddComponent(entity, new Spawner
             {
                 Prefab = GetEntity(authoring.Prefab, TransformUsageFlags.Dynamic),
-                TimeBetweenSpawns = authoring.timeBetweenSpawns,
-                Timer = authoring.timeBetweenSpawns
+                TimeBetweenSpawns = SpawnSystem.DEFAULT_TIME_BETWEEN_SPAWNS,
+                Timer = SpawnSystem.DEFAULT_TIME_BETWEEN_SPAWNS
             });
         }
     }

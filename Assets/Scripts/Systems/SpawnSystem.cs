@@ -8,6 +8,8 @@ using Unity.Mathematics;
 [BurstCompile]
 public partial struct SpawnSystem : ISystem
 {
+    public const float DEFAULT_TIME_BETWEEN_SPAWNS = 2f;
+    
     [BurstCompile]
     public void OnUpdate(ref SystemState state)
     {
@@ -21,7 +23,7 @@ public partial struct SpawnSystem : ISystem
         }
 
         float elfCount = 0;
-        if (SystemAPI.HasSingleton<SpawnerSettings>())
+        if (SystemAPI.HasSingleton<ElfCountData>())
         {
             elfCount = SystemAPI.GetSingleton<ElfCountData>().TotalCount;
         }
@@ -48,6 +50,7 @@ public partial struct SpawnSystem : ISystem
 
                 ecb.AddComponent(newEntity, newLifetimeComponent);
                 
+                // Uncomment if we want to spawn only 1 Elf
                 //state.Enabled = false;
             }
         }

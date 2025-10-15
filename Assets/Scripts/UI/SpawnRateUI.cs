@@ -47,7 +47,7 @@ public class SpawnRateUI : MonoBehaviour
         {
             hasSettings = TryGetSettingsEntity(out settingsEntity);
             if (!hasSettings) 
-                return 1f;
+                return SpawnSystem.DEFAULT_TIME_BETWEEN_SPAWNS;
         }
         return entityManager.GetComponentData<SpawnerSettings>(settingsEntity).TimeBetweenSpawns;
     }

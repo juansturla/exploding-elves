@@ -11,19 +11,20 @@ public struct ElfCountData : IComponentData
 }
 public class ElfCountDataAuthoring : MonoBehaviour
 {
-    public class ElfCountDataBaker : Baker<ElfCountDataAuthoring>
+}
+
+public class ElfCountDataBaker : Baker<ElfCountDataAuthoring>
+{
+    public override void Bake(ElfCountDataAuthoring authoring)
     {
-        public override void Bake(ElfCountDataAuthoring authoring)
+        var entity = GetEntity(TransformUsageFlags.None);
+        AddComponent(entity, new ElfCountData
         {
-            var entity = GetEntity(TransformUsageFlags.None);
-            AddComponent(entity, new ElfCountData
-            {
-                RedCount = 0,
-                GreenCount = 0,
-                BlueCount = 0,
-                WhiteCount = 0,
-                TotalCount = 0,
-            });
-        }
+            RedCount = 0,
+            GreenCount = 0,
+            BlueCount = 0,
+            WhiteCount = 0,
+            TotalCount = 0,
+        });
     }
 }

@@ -8,9 +8,6 @@ public struct SpawnerSettings : IComponentData
 
 public class SpawnerSettingsAuthoring : MonoBehaviour
 {
-    [Tooltip("Global time between spawns (seconds)")]
-    [Range(0.5f, 10f)]
-    public float TimeBetweenSpawns = 1f;
 }
 
 public class SpawnerSettingsBaker : Baker<SpawnerSettingsAuthoring>
@@ -20,7 +17,7 @@ public class SpawnerSettingsBaker : Baker<SpawnerSettingsAuthoring>
         var entity = GetEntity(TransformUsageFlags.None);
         AddComponent(entity, new SpawnerSettings
         {
-            TimeBetweenSpawns = authoring.TimeBetweenSpawns
+            TimeBetweenSpawns = SpawnSystem.DEFAULT_TIME_BETWEEN_SPAWNS
         });
     }
 }
