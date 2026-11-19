@@ -1,6 +1,7 @@
 using Unity.Collections;
 using Unity.Entities;
 using Unity.Physics;
+using Unity.Rendering;
 using Unity.Transforms;
 using UnityEngine;
 
@@ -27,6 +28,8 @@ public partial struct ElfAnimatorSystem : ISystem
                 ElfAnimator = newGameObject.GetComponent<Animator>()
             };
             ecb.AddComponent(entity, newAnimatorReference);
+            // The animated model replaces the placeholder cube
+            ecb.AddComponent<DisableRendering>(entity);
         }
 
         foreach (var (transform, animatorReference) in

@@ -19,6 +19,11 @@ public class ElfAnimatorAuthoring : MonoBehaviour
     {
         public override void Bake(ElfAnimatorAuthoring authoring)
         {
+            // The model comes from an Asset Store pack that isn't in the repo.
+            // Without it the elf keeps its colored cube.
+            if (authoring.ElfGameObjectPrefab == null)
+                return;
+
             var entity = GetEntity(TransformUsageFlags.Dynamic);
             AddComponentObject(entity, new ElfGameObjectComponent()
             {
