@@ -1,20 +1,20 @@
 # Exploding Elves
 
-A Unity DOTS (ECS) simulation built to run with lots of entities on mobile. Four spawners each generate elves of one color (black, red, white and blue) that wander the scene at random. When two elves of the same color collide, they spawn another elf of that color. When elves of different colors collide, both explode. The player can change how often each spawner generates elves, and the simulation speed.
+A Unity DOTS (ECS) simulation built to run with lots of entities on mobile. Four spawners each generate elves of one color (red, green, blue and white) that wander the scene at random. When two elves of the same color collide, they spawn another elf of that color. When elves of different colors collide, both explode. The player can change how often each spawner generates elves, and the simulation speed.
 
 Developed by Chicken 🐔 in October 2025.
 
 ## Tech
 
-- Unity 2022.3 (2022.3.62f2), URP
-- Entities 1.4 with Entities Graphics, Burst-compiled systems and jobs
-- Unity Physics 1.4 (replacing the built-in physics)
+- Unity 6 (6000.6.4f1), URP 17.6
+- Entities 6.6 with Entities Graphics, Burst-compiled systems and jobs
+- Unity Physics 6.6 (replacing the built-in physics)
 - Android and iOS player settings, with safe-area handling for the UI
 
 ## Running it
 
-1. Open the project in Unity 2022.3.62f2.
-2. Import the free [Low Poly Christmas Pack + Santa Claus](https://assetstore.unity.com/packages/3d/characters/low-poly-christmas-pack-santa-claus-181035) from the Unity Asset Store into `Assets/Markus Art/`. Its files are not in this repo because the Asset Store license doesn't allow redistributing them.
+1. Open the project in Unity 6000.6.4f1.
+2. Optional: import the free [Low Poly Christmas Pack + Santa Claus](https://assetstore.unity.com/packages/3d/characters/low-poly-christmas-pack-santa-claus-181035) from the Unity Asset Store into `Assets/Markus Art/` for the animated Santa models. Its files are not in this repo because the Asset Store license doesn't allow redistributing them. Without it, every elf is a cube in its color and the simulation runs the same.
 3. Open `Assets/Scenes/MainScene.unity` and press Play. `SingleColorScene` runs a single color.
 
 ## Breakdown
@@ -42,7 +42,7 @@ Minor functionality, such as the UI, was a mix of AI (Cursor) and code samples. 
 
 ### Elf Animator System
 
-The 3D assets come with animations, which are not very compatible with ECS. This system creates a GameObject that follows and updates each entity. This "hybrid approach" is not the most efficient, but it is fast and easy to implement. It could be improved with libraries that handle animation differently.
+The 3D assets come with animations, which are not very compatible with ECS. This system creates a GameObject that follows and updates each entity, and hides the entity's placeholder cube. Elves without a model (when the art pack isn't imported) keep the cube. This "hybrid approach" is not the most efficient, but it is fast and easy to implement. It could be improved with libraries that handle animation differently.
 
 ### Elf Count System
 
