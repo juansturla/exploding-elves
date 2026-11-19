@@ -2,6 +2,8 @@
 
 A Unity DOTS (ECS) simulation built to run with lots of entities on mobile. Four spawners each generate elves of one color (red, green, blue and white) that wander the scene at random. When two elves of the same color collide, they spawn another elf of that color. When elves of different colors collide, both explode. The player can change how often each spawner generates elves, and the simulation speed.
 
+![Elves of four colors spawning, multiplying on same-color collisions and exploding on mixed-color ones](docs/exploding-elves.gif)
+
 Developed by Chicken 🐔 in October 2025.
 
 ## Tech
