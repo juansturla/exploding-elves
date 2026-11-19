@@ -4,7 +4,7 @@ A Unity DOTS (ECS) simulation built to run with lots of entities on mobile. Four
 
 ![Elves of four colors spawning, multiplying on same-color collisions and exploding on mixed-color ones](docs/exploding-elves.gif)
 
-Developed by Chicken 🐔 in October 2025.
+Developed by Chicken 🐔 in October 2025, in 7 days, as a take-home exercise for a game studio. It got me the job. The scope is an MVP: the optional features and known bugs below are what I'd tackle next.
 
 ## Tech
 
