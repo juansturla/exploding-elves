@@ -33,6 +33,7 @@ using Unity.Transforms;
             ElvesLookup = SystemAPI.GetComponentLookup<ElfComponent>(true),
             LifetimeLookup = SystemAPI.GetComponentLookup<LifetimeComponent>(false),
             KillingFloorLookup = SystemAPI.GetComponentLookup<KillingFloorComponent>(true),
+            PendingDestroyLookup = SystemAPI.GetComponentLookup<PendingDestroy>(true),
             TransformLookup = SystemAPI.GetComponentLookup<LocalTransform>(false),
             RandomMotionLookup = SystemAPI.GetComponentLookup<RandomMotion>(false),
             ElfCountData = SystemAPI.GetSingleton<ElfCountData>(),
@@ -52,6 +53,7 @@ using Unity.Transforms;
         [ReadOnly] public PhysicsWorld PhysicsWorld;
         [ReadOnly] public ComponentLookup<ElfComponent> ElvesLookup;
         [ReadOnly] public ComponentLookup<KillingFloorComponent> KillingFloorLookup;
+        [ReadOnly] public ComponentLookup<PendingDestroy> PendingDestroyLookup;
         public ComponentLookup<LocalTransform> TransformLookup;
         public ComponentLookup<RandomMotion> RandomMotionLookup;
         public EntityCommandBuffer ECB;
@@ -65,6 +67,11 @@ using Unity.Transforms;
         {
             var entityA = collisionEvent.EntityA;
             var entityB = collisionEvent.EntityB;
+
+            // Elves marked in an earlier frame are destroyed by PendingDestroyCleanupSystem
+            // before this ECB plays back, so any command recorded for them would fail
+            if (PendingDestroyLookup.HasComponent(entityA) || PendingDestroyLookup.HasComponent(entityB))
+                return;
             
             var isElfA = ElvesLookup.HasComponent(entityA);
             var isElfB = ElvesLookup.HasComponent(entityB);
